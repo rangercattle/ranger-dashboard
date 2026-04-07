@@ -344,7 +344,7 @@
   }
   .chart-title span { color: var(--accent2); }
 
-  .bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 160px; padding-bottom: 70px; padding-top: 28px; position: relative; }
+  .bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 220px; padding-bottom: 70px; padding-top: 28px; position: relative; }
   .bar-wrap { display: flex; flex-direction: column; align-items: center; flex: 1; height: 100%; justify-content: flex-end; position: relative; }
   .bar {
     width: 100%;
@@ -595,15 +595,15 @@
 
 <div class="stats-row">
   <div class="stat-block">
-    <div class="stat-val">253</div>
+    <div class="stat-val">297</div>
     <div class="stat-label">Progeny</div>
   </div>
   <div class="stat-block">
-    <div class="stat-val">11</div>
+    <div class="stat-val">18</div>
     <div class="stat-label">Sires</div>
   </div>
   <div class="stat-block">
-    <div class="stat-val">893.3</div>
+    <div class="stat-val">904.8</div>
     <div class="stat-label">Avg CWT</div>
   </div>
   <div class="stat-block">
@@ -673,7 +673,7 @@
       <div class="chart-title">Sire Performance Radar · <span>Select sires to compare across all traits</span></div>
       <div id="radar-controls" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;"></div>
       <div style="display:flex;justify-content:center;">
-        <canvas id="radarCanvas" width="700" height="700"></canvas>
+        <canvas id="radarCanvas" width="800" height="800"></canvas>
       </div>
     </div>
   </div>
@@ -1373,7 +1373,7 @@ function renderScatterPlot() {
   const canvas = document.getElementById('scatterCanvas');
   const container = canvas.parentElement;
   const W = container.clientWidth || 800;
-  const H = Math.round(W * 0.55);
+  const H = Math.round(W * 0.7);
   canvas.width = W;
   canvas.height = H;
   canvas.style.height = H + 'px';
