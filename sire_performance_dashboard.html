@@ -578,7 +578,7 @@
 <div class="system-bar">
   <div class="sys-dot"></div>
   <span class="sys-label">Livestock Analytics Platform · Build 2.4</span>
-  <span style="margin-left:auto;">Session: ACTIVE · Data: 343 Records</span>
+  <span style="margin-left:auto;">Session: ACTIVE · Data: 371 Records</span>
 </div>
 
 <div class="header">
@@ -595,15 +595,16 @@
 
 <div class="stats-row">
   <div class="stat-block">
-    <div class="stat-val">343</div>
+    <div class="stat-val">371</div>
     <div class="stat-label">Progeny</div>
   </div>
   <div class="stat-block">
-    <div class="stat-val">18</div>
+    <div class="stat-val">19</div>
     <div class="stat-label">Sires</div>
   </div>
   <div class="stat-block">
-    <div class="stat-val">906.6</div>
+    <div class="stat-val">914.0 <span style="font-size:60%;opacity:0.7">lb</span></div>
+    <div style="font-size:13px;color:var(--text-dim);margin-top:-4px;letter-spacing:0.5px">414.6 kg</div>
     <div class="stat-label">Avg CWT</div>
   </div>
   <div class="stat-block">
@@ -1124,7 +1125,7 @@ function renderGrid() {
       </div>
       <div class="card-name ${cc}">${s.name}</div>
       <div class="card-stats">
-        <div class="stat-item"><div class="si-label">CWT</div><div class="si-val">${s.cwt.toFixed(1)}</div></div>
+        <div class="stat-item"><div class="si-label">CWT</div><div class="si-val">${s.cwt.toFixed(1)} <span style="font-size:55%;opacity:0.7;font-weight:normal">lb</span></div><div style="font-size:11px;color:var(--text-dim);margin-top:-2px;letter-spacing:0.3px">${(s.cwt*0.453592).toFixed(1)} kg</div></div>
         <div class="stat-item"><div class="si-label">Marbling %</div><div class="si-val">${s.marb.toFixed(1)}</div></div>
         <div class="stat-item"><div class="si-label">EMA</div><div class="si-val">${s.ema.toFixed(1)}</div></div>
         <div class="stat-item"><div class="si-label">Fineness</div><div class="si-val">${s.fineness.toFixed(2)}</div></div>
