@@ -18,16 +18,16 @@
     --accent4: #a855f7;
     --green: #39ff14;
     --red: #ff3355;
-    --text: #c8dff0;
-    --text-dim: #5a8aaa;
-    --text-bright: #e8f4ff;
+    --text: #d8e8f4;
+    --text-dim: #8aacc4;
+    --text-bright: #f0f8ff;
   }
   * { margin:0; padding:0; box-sizing:border-box; }
   body {
     background: var(--bg);
     color: var(--text);
     font-family: 'Rajdhani', sans-serif;
-    font-size: 14px;
+    font-size: 15px;
     min-height: 100vh;
     background-image:
       radial-gradient(ellipse at 20% 0%, rgba(0,100,200,0.08) 0%, transparent 50%),
@@ -45,11 +45,11 @@
     align-items: center;
     gap: 8px;
     font-family: 'Share Tech Mono', monospace;
-    font-size: 11px;
+    font-size: 12px;
     color: var(--text-dim);
   }
   .sys-dot { width:8px; height:8px; border-radius:50%; background: var(--green); box-shadow: 0 0 6px var(--green); }
-  .sys-label { color: var(--accent1); letter-spacing: 2px; text-transform: uppercase; }
+  .sys-label { color: var(--accent1); letter-spacing: 1.5px; text-transform: uppercase; }
 
   .header {
     padding: 16px 20px 12px;
@@ -77,15 +77,15 @@
     border: 1px solid var(--accent1);
     color: var(--accent1);
     font-family: 'Share Tech Mono', monospace;
-    font-size: 10px;
-    padding: 2px 8px;
-    letter-spacing: 1px;
+    font-size: 11px;
+    padding: 3px 10px;
+    letter-spacing: 0.8px;
   }
   .header-sub span {
-    color: var(--text-dim);
-    font-size: 12px;
+    color: var(--text);
+    font-size: 13px;
     font-family: 'Share Tech Mono', monospace;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
   }
   .sep { color: var(--border-bright); }
 
@@ -112,9 +112,9 @@
     text-shadow: 0 0 15px rgba(255,215,0,0.4);
   }
   .stat-label {
-    font-size: 11px;
-    letter-spacing: 2px;
-    color: var(--text-dim);
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    color: var(--text);
     text-transform: uppercase;
     margin-top: 4px;
     font-family: 'Share Tech Mono', monospace;
@@ -130,9 +130,9 @@
     background: rgba(0,10,20,0.5);
   }
   .ctrl-label {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--text-dim);
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
     font-family: 'Share Tech Mono', monospace;
     margin-right: 4px;
   }
@@ -142,9 +142,9 @@
     color: var(--text-dim);
     font-family: 'Rajdhani', sans-serif;
     font-weight: 600;
-    font-size: 12px;
-    letter-spacing: 1px;
-    padding: 4px 14px;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    padding: 5px 16px;
     cursor: pointer;
     text-transform: uppercase;
     transition: all 0.2s;
@@ -157,6 +157,91 @@
     box-shadow: 0 0 10px rgba(0,212,255,0.2);
   }
 
+  /* Progeny tab — clear affordance that this leads to carcass images */
+  .tab-progeny {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 8px;
+  }
+  .tab-progeny .camera-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+  .tab-progeny .tab-hint {
+    display: inline-block;
+    background: var(--accent2);
+    color: #1a0f00;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    padding: 2px 7px;
+    border-radius: 2px;
+    margin-left: 4px;
+    text-transform: uppercase;
+    box-shadow: 0 0 8px rgba(255,215,0,0.3);
+    animation: hint-pulse 2.4s ease-in-out infinite;
+  }
+  .tab-progeny.active .tab-hint {
+    background: rgba(0,212,255,0.2);
+    color: var(--accent1);
+    box-shadow: none;
+    animation: none;
+  }
+  @keyframes hint-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+  }
+
+  /* Carcass images callout banner — shown on overview tab */
+  .images-callout {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 20px;
+    margin: 0 0 20px 0;
+    background: linear-gradient(90deg, rgba(255,215,0,0.08), rgba(255,215,0,0.02));
+    border: 1px solid rgba(255,215,0,0.3);
+    border-left: 3px solid var(--accent2);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .images-callout:hover {
+    background: linear-gradient(90deg, rgba(255,215,0,0.12), rgba(255,215,0,0.04));
+    border-color: var(--accent2);
+  }
+  .images-callout .ic-icon {
+    width: 28px; height: 28px;
+    flex-shrink: 0;
+    color: var(--accent2);
+  }
+  .images-callout .ic-text { flex: 1; }
+  .images-callout .ic-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent2);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+  .images-callout .ic-desc {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--text);
+    letter-spacing: 0.4px;
+  }
+  .images-callout .ic-arrow {
+    color: var(--accent2);
+    font-size: 18px;
+    font-family: 'Share Tech Mono', monospace;
+    transition: transform 0.2s;
+  }
+  .images-callout:hover .ic-arrow {
+    transform: translateX(4px);
+  }
+
   /* TABS NAV */
   .tabs {
     display: flex;
@@ -166,10 +251,10 @@
     background: rgba(0,8,18,0.7);
   }
   .tab {
-    padding: 10px 20px;
-    font-size: 12px;
+    padding: 11px 22px;
+    font-size: 13px;
     font-weight: 600;
-    letter-spacing: 2px;
+    letter-spacing: 1.5px;
     text-transform: uppercase;
     cursor: pointer;
     color: var(--text-dim);
@@ -189,9 +274,9 @@
     gap: 10px;
     margin-bottom: 14px;
     font-family: 'Share Tech Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 2px;
-    color: var(--text-dim);
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    color: var(--text);
     text-transform: uppercase;
   }
   .section-header::before {
@@ -257,33 +342,33 @@
   }
   .card-progeny {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 10px;
+    font-size: 12px;
     color: var(--text-dim);
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
   }
   .card-rank {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 11px;
-    color: var(--text-dim);
+    font-size: 13px;
+    color: var(--text);
     background: rgba(0,20,40,0.8);
     border: 1px solid var(--border);
-    padding: 1px 6px;
+    padding: 2px 8px;
   }
   .card-name {
     font-family: 'Orbitron', monospace;
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 700;
-    letter-spacing: 1px;
-    margin-bottom: 2px;
+    letter-spacing: 0.8px;
+    margin-bottom: 3px;
     line-height: 1.2;
   }
   .card-registry {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 9px;
+    font-size: 11px;
     color: var(--text-dim);
-    letter-spacing: 0.8px;
-    margin-bottom: 10px;
-    line-height: 1.3;
+    letter-spacing: 0.3px;
+    margin-bottom: 12px;
+    line-height: 1.4;
   }
   .card-registry .reg-label { opacity: 0.65; }
   .card-registry .reg-id { color: var(--text); }
@@ -300,22 +385,43 @@
   .card-stats {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 4px;
+    gap: 8px;
   }
   .stat-item {}
   .stat-item .si-label {
-    font-size: 9px;
+    font-size: 11px;
     color: var(--text-dim);
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
     font-family: 'Share Tech Mono', monospace;
     text-transform: uppercase;
+    margin-bottom: 2px;
   }
   .stat-item .si-val {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 16px;
+    font-size: 19px;
     font-weight: bold;
     color: var(--text-bright);
     line-height: 1.2;
+  }
+  /* hero stat — the metric currently being sorted on */
+  .stat-item.hero {
+    grid-column: span 2;
+    padding: 8px 0 8px;
+    margin-bottom: 4px;
+    border-top: 1px solid rgba(42,90,140,0.4);
+    border-bottom: 1px solid rgba(42,90,140,0.4);
+    background: rgba(0,30,60,0.3);
+    padding-left: 8px;
+  }
+  .stat-item.hero .si-label {
+    font-size: 11px;
+    color: var(--accent1);
+    letter-spacing: 1.2px;
+    margin-bottom: 4px;
+  }
+  .stat-item.hero .si-val {
+    font-size: 28px;
+    color: var(--text-bright);
   }
 
   .low-n-badge {
@@ -344,16 +450,16 @@
   }
   .chart-title {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 10px;
-    color: var(--text-dim);
-    letter-spacing: 2px;
+    font-size: 12px;
+    color: var(--text);
+    letter-spacing: 1.5px;
     text-transform: uppercase;
     margin-bottom: 20px;
     display: flex;
     align-items: center;
     gap: 8px;
   }
-  .chart-title span { color: var(--accent2); }
+  .chart-title span { color: var(--accent2); font-size: 11px; letter-spacing: 1px; }
 
   .bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 160px; padding-bottom: 70px; padding-top: 28px; position: relative; }
   .bar-wrap { display: flex; flex-direction: column; align-items: center; flex: 1; height: 100%; justify-content: flex-end; position: relative; }
@@ -366,24 +472,24 @@
   .bar:hover { opacity: 0.8; }
   .bar-val {
     position: absolute;
-    top: -20px; left: 50%;
+    top: -22px; left: 50%;
     transform: translateX(-50%);
     font-family: 'Share Tech Mono', monospace;
-    font-size: 9px;
+    font-size: 11px;
     color: var(--text-bright);
     white-space: nowrap;
     background: var(--panel);
-    padding: 1px 3px;
+    padding: 1px 4px;
     z-index: 2;
   }
   .bar-label {
     position: absolute;
-    bottom: -64px;
+    bottom: -66px;
     left: 50%;
     transform: translateX(-50%) rotate(-45deg);
     transform-origin: top center;
     font-family: 'Share Tech Mono', monospace;
-    font-size: 11px;
+    font-size: 12px;
     color: var(--text);
     white-space: nowrap;
     letter-spacing: 0.5px;
@@ -431,57 +537,57 @@
   }
   .sire-group-header .sire-name {
     font-family: 'Orbitron', monospace;
-    font-size: 14px; font-weight: 700;
-    letter-spacing: 1.5px;
+    font-size: 16px; font-weight: 700;
+    letter-spacing: 1.2px;
   }
   .sire-group-header .sire-registry {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 9px; color: var(--text-dim);
-    letter-spacing: 1px;
+    font-size: 11px; color: var(--text-dim);
+    letter-spacing: 0.5px;
   }
-  .sire-group-header .sire-registry .reg-label { color: var(--text-dim); opacity: 0.7; }
+  .sire-group-header .sire-registry .reg-label { color: var(--text-dim); opacity: 0.8; }
   .sire-group-header .sire-registry .reg-id    { color: var(--text); }
   .sire-group-header .sire-registry .reg-sep   { margin: 0 8px; color: var(--border-bright); }
   .sire-group-header .prog-count {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 10px; color: #fff;
+    font-size: 12px; color: #fff;
     background: rgba(0,200,255,0.15);
     border: 1px solid var(--accent1);
-    padding: 2px 10px;
+    padding: 3px 12px;
     letter-spacing: 1px;
     white-space: nowrap;
   }
   .prog-col-header {
     display: grid;
-    grid-template-columns: 80px 200px 150px 90px 90px 90px;
-    padding: 5px 14px;
+    grid-template-columns: 96px 200px 150px 90px 90px 90px;
+    padding: 7px 14px;
     background: rgba(0,20,45,0.97);
     border-bottom: 1px solid var(--border);
     font-family: 'Share Tech Mono', monospace;
-    font-size: 9px; color: var(--text-dim);
-    letter-spacing: 1px; text-transform: uppercase;
+    font-size: 11px; color: var(--text);
+    letter-spacing: 0.8px; text-transform: uppercase;
     position: sticky; top: 41px; z-index: 1;
   }
   .prog-table-row {
     display: grid;
-    grid-template-columns: 80px 200px 150px 90px 90px 90px;
-    padding: 4px 14px;
+    grid-template-columns: 96px 200px 150px 90px 90px 90px;
+    padding: 6px 14px;
     align-items: center;
     border-bottom: 1px solid rgba(26,58,92,0.3);
     font-family: 'Share Tech Mono', monospace;
-    font-size: 11px;
+    font-size: 13px;
     transition: background 0.15s;
   }
   .prog-table-row:hover { background: rgba(0,30,60,0.4); }
   .prog-table-row:last-child { border-bottom: none; }
-  .animal-id { color: var(--accent1); font-size: 14px; font-weight: 600; }
-  .sire-name { color: var(--accent2); font-size: 10px; }
+  .animal-id { color: var(--accent1); font-size: 15px; font-weight: 600; }
+  .sire-name { color: var(--accent2); font-size: 11px; }
   .high { color: #4ade80; }
   .mid { color: var(--text); }
   .low-val { color: var(--accent3); }
 
   .thumb {
-    width: 72px; height: 54px;
+    width: 88px; height: 66px;
     object-fit: cover;
     border: 1px solid var(--border);
     cursor: pointer;
@@ -491,11 +597,11 @@
   }
   .thumb:hover { border-color: var(--accent1); transform: scale(1.04); }
   .thumb-placeholder {
-    width: 72px; height: 54px;
+    width: 88px; height: 66px;
     background: rgba(0,20,40,0.6);
     border: 1px solid rgba(0,200,255,0.3);
     display: flex; align-items: center; justify-content: center;
-    font-size: 8px; color: var(--text-dim);
+    font-size: 9px; color: var(--text-dim);
     cursor: pointer;
     flex-direction: column; gap: 3px;
     text-align: center; padding: 4px;
@@ -574,22 +680,22 @@
   }
   .filter-label {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 10px;
+    font-size: 12px;
     color: var(--text-dim);
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
     margin-right: 4px;
   }
   .filter-pill {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 5px;
     background: rgba(0,15,30,0.8);
     border: 1px solid var(--border);
-    padding: 2px 10px;
+    padding: 3px 12px;
     font-family: 'Share Tech Mono', monospace;
-    font-size: 10px;
+    font-size: 12px;
     cursor: pointer;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
     transition: all 0.15s;
   }
   .filter-pill.active { border-color: var(--accent1); color: var(--accent1); background: rgba(0,212,255,0.08); }
@@ -655,7 +761,14 @@
 
 <div class="tabs">
   <div class="tab active" onclick="switchTab('overview',this)">Overview</div>
-  <div class="tab" onclick="switchTab('progeny',this)">Progeny</div>
+  <div class="tab tab-progeny" onclick="switchTab('progeny',this)">
+    <svg class="camera-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+      <circle cx="12" cy="13" r="4"/>
+    </svg>
+    Progeny
+    <span class="tab-hint">Carcass Images</span>
+  </div>
   <div class="tab" onclick="switchTab('scatterplot',this)">Scatter</div>
   <div class="tab" onclick="switchTab('scatter',this)">Radar</div>
 </div>
@@ -664,6 +777,18 @@
 
   <!-- OVERVIEW TAB -->
   <div class="tab-panel active" id="tab-overview">
+    <div class="images-callout" onclick="switchTab('progeny', document.querySelectorAll('.tab')[1])">
+      <svg class="ic-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+        <circle cx="12" cy="13" r="4"/>
+      </svg>
+      <div class="ic-text">
+        <div class="ic-title">View Carcass Cross-Section Images</div>
+        <div class="ic-desc">Click the Progeny tab to browse every individual carcass photo — grouped by sire</div>
+      </div>
+      <div class="ic-arrow">→</div>
+    </div>
+
     <div class="section-header">Sire Rankings</div>
 
     <div class="sire-grid" id="sire-grid"></div>
@@ -1132,11 +1257,31 @@ function renderGrid() {
   const grid = document.getElementById('sire-grid');
   const origIdx = (s) => SIRES.indexOf(s);
 
+  // Build stat blocks — the active sort metric is rendered as the hero (full-width, bigger)
+  const buildStat = (s, key, isHero) => {
+    const labels = { cwt: 'CWT', marb: 'Marbling %', ema: 'EMA (cm²)', fineness: 'Fineness' };
+    const cls = isHero ? 'stat-item hero' : 'stat-item';
+    if (key === 'cwt') {
+      return `<div class="${cls}"><div class="si-label">${labels[key]}</div><div class="si-val">${s.cwt.toFixed(1)} <span style="font-size:55%;opacity:0.7;font-weight:normal">lb</span></div><div style="font-size:11px;color:var(--text-dim);margin-top:-1px;letter-spacing:0.3px">${(s.cwt*0.453592).toFixed(1)} kg</div></div>`;
+    }
+    if (key === 'marb') {
+      return `<div class="${cls}"><div class="si-label">${labels[key]}</div><div class="si-val">${s.marb.toFixed(1)}%</div></div>`;
+    }
+    if (key === 'ema') {
+      return `<div class="${cls}"><div class="si-label">${labels[key]}</div><div class="si-val">${s.ema.toFixed(1)}</div></div>`;
+    }
+    return `<div class="${cls}"><div class="si-label">${labels[key]}</div><div class="si-val">${s.fineness.toFixed(2)}</div></div>`;
+  };
+
+  const order = ['cwt','marb','ema','fineness'];
+
   grid.innerHTML = filtered.map((s, i) => {
     const oi = origIdx(s);
     const rank = sortedSires.indexOf(s) + 1;
     const lowN = s.progeny <= 3;
     const cc = getColorClass(oi);
+    // hero is the active sort, others follow
+    const otherKeys = order.filter(k => k !== currentSort);
     return `
     <div class="sire-card">
       <div class="corner-tl"></div>
@@ -1149,10 +1294,8 @@ function renderGrid() {
         <span class="reg-label">AuWA:</span> <span class="reg-id">${(SIRE_INFO[s.name] && SIRE_INFO[s.name].awa) || s.name}</span>${SIRE_INFO[s.name] && SIRE_INFO[s.name].amwa ? `<span class="reg-sep">·</span><span class="reg-label">AmWA:</span> <span class="reg-id">${SIRE_INFO[s.name].amwa}</span>` : ''}
       </div>
       <div class="card-stats">
-        <div class="stat-item"><div class="si-label">CWT</div><div class="si-val">${s.cwt.toFixed(1)} <span style="font-size:55%;opacity:0.7;font-weight:normal">lb</span></div><div style="font-size:11px;color:var(--text-dim);margin-top:-2px;letter-spacing:0.3px">${(s.cwt*0.453592).toFixed(1)} kg</div></div>
-        <div class="stat-item"><div class="si-label">Marbling %</div><div class="si-val">${s.marb.toFixed(1)}</div></div>
-        <div class="stat-item"><div class="si-label">EMA (cm²)</div><div class="si-val">${s.ema.toFixed(1)}</div></div>
-        <div class="stat-item"><div class="si-label">Fineness</div><div class="si-val">${s.fineness.toFixed(2)}</div></div>
+        ${buildStat(s, currentSort, true)}
+        ${otherKeys.map(k => buildStat(s, k, false)).join('')}
       </div>
     </div>`;
   }).join('');
