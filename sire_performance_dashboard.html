@@ -2023,10 +2023,10 @@ function openSireGallery(sireName) {
     ` &nbsp; EMA: <span>${sire.ema.toFixed(1)} cm²</span>` +
     ` &nbsp; Fineness: <span>${sire.fineness.toFixed(2)}</span>`;
 
-  // gather progeny for this sire
+  // gather progeny for this sire, sorted by marbling % descending
   const progs = PROGENY.filter(p => p.sire === sireName);
-  const withImg = progs.filter(p => IMG_MAP[p.id]);
-  const withoutImg = progs.filter(p => !IMG_MAP[p.id]);
+  const withImg = progs.filter(p => IMG_MAP[p.id]).sort((a,b) => b.marb - a.marb);
+  const withoutImg = progs.filter(p => !IMG_MAP[p.id]).sort((a,b) => b.marb - a.marb);
   const ordered = [...withImg, ...withoutImg];
 
   document.getElementById('sg-count').textContent =
