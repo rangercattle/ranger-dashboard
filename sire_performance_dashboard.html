@@ -306,11 +306,23 @@
     flex-direction: column;
   }
   .sire-card:hover {
-    border-color: var(--border-bright);
+    border-color: var(--accent1);
     background: var(--panel2);
     transform: translateY(-1px);
-    box-shadow: 0 4px 20px rgba(0,212,255,0.1);
+    box-shadow: 0 4px 20px rgba(0,212,255,0.15);
   }
+  .sire-card:hover::before {
+    background: linear-gradient(90deg, transparent, var(--accent1), transparent);
+  }
+  .card-gallery-hint {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px; letter-spacing: 1px;
+    color: var(--border-bright);
+    margin-top: auto; padding-top: 8px;
+    text-align: right;
+    transition: color .2s;
+  }
+  .sire-card:hover .card-gallery-hint { color: var(--accent1); }
   .sire-card::before {
     content: '';
     position: absolute;
@@ -663,6 +675,107 @@
     margin-bottom: 8px;
   }
 
+  /* SIRE GALLERY MODAL */
+  .sg-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.92);
+    z-index: 1100;
+    flex-direction: column;
+  }
+  .sg-overlay.open { display: flex; }
+  .sg-header {
+    background: rgba(5,10,15,0.98);
+    border-bottom: 1px solid var(--border-bright);
+    padding: 14px 20px;
+    display: flex; align-items: center; gap: 16px;
+    flex-shrink: 0;
+  }
+  .sg-header-name {
+    font-family: 'Orbitron', monospace;
+    font-size: 16px; font-weight: 700;
+    color: var(--accent1);
+    letter-spacing: 2px;
+  }
+  .sg-header-stats {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px; color: var(--text-dim);
+    display: flex; gap: 18px; margin-left: 8px;
+  }
+  .sg-header-stats span { color: var(--text-bright); }
+  .sg-close {
+    margin-left: auto;
+    background: none; border: 1px solid var(--border);
+    color: var(--text-dim); font-size: 18px;
+    cursor: pointer; padding: 4px 10px; line-height: 1;
+    font-family: 'Share Tech Mono', monospace;
+    transition: all .2s;
+  }
+  .sg-close:hover { color: var(--accent1); border-color: var(--accent1); }
+  .sg-body {
+    overflow-y: auto;
+    padding: 20px;
+    flex: 1;
+  }
+  .sg-count {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px; color: var(--text-dim);
+    margin-bottom: 14px;
+    letter-spacing: 1px;
+  }
+  .sg-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 14px;
+  }
+  .sg-thumb {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all .2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .sg-thumb:hover {
+    border-color: var(--accent1);
+    box-shadow: 0 0 16px rgba(0,212,255,0.2);
+    transform: translateY(-2px);
+  }
+  .sg-thumb img {
+    width: 100%; display: block;
+    aspect-ratio: 4/3; object-fit: cover;
+    background: var(--panel2);
+  }
+  .sg-thumb-info {
+    padding: 7px 9px;
+    font-family: 'Share Tech Mono', monospace;
+  }
+  .sg-thumb-id {
+    font-size: 10px; color: var(--accent1);
+    letter-spacing: 0.5px; margin-bottom: 4px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .sg-thumb-stats {
+    font-size: 10px; color: var(--text-dim);
+    display: flex; gap: 10px; flex-wrap: wrap;
+  }
+  .sg-thumb-stats b { color: var(--text-bright); }
+  .sg-no-img {
+    width: 100%; aspect-ratio: 4/3;
+    background: var(--panel2);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px; color: var(--border-bright);
+    letter-spacing: 1px;
+  }
+  .sg-date-badge {
+    position: absolute; top: 6px; right: 6px;
+    background: rgba(0,0,0,0.7);
+    border: 1px solid var(--border);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px; color: var(--text-dim);
+    padding: 2px 5px;
+  }
   /* SCROLLBAR */
   ::-webkit-scrollbar { width: 4px; height: 4px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
@@ -708,7 +821,7 @@
 <div class="system-bar">
   <div class="sys-dot"></div>
   <span class="sys-label">Livestock Analytics Platform · Build 2.4</span>
-  <span style="margin-left:auto;">Session: ACTIVE · Data: 456 Records</span>
+  <span style="margin-left:auto;">Session: ACTIVE · Data: 482 Records</span>
 </div>
 
 <div class="header">
@@ -825,6 +938,18 @@
 
 </div>
 
+<div class="sg-overlay" id="sgModal">
+  <div class="sg-header">
+    <div class="sg-header-name" id="sg-sire-name"></div>
+    <div class="sg-header-stats" id="sg-sire-stats"></div>
+    <button class="sg-close" onclick="closeSireGallery()">✕ CLOSE</button>
+  </div>
+  <div class="sg-body">
+    <div class="sg-count" id="sg-count"></div>
+    <div class="sg-grid" id="sg-grid"></div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="imgModal" onclick="closeModal(event)">
   <div class="modal-box">
     <button class="modal-close" onclick="document.getElementById('imgModal').classList.remove('open')">✕</button>
@@ -837,26 +962,26 @@
 
 <script>
 const SIRES = [
-  {name:"RGRFQ434G",progeny:135,cwt:911.39,marb:25.93,ema:91.91,fineness:5.48},
-  {name:"GMYFR34",progeny:76,cwt:937.48,marb:19.74,ema:91.11,fineness:4.62},
-  {name:"KKWFE0010",progeny:41,cwt:910.34,marb:26.84,ema:86.63,fineness:5.83},
+  {name:"RGRFQ434G",progeny:144,cwt:913.06,marb:25.79,ema:92.35,fineness:5.5},
+  {name:"GMYFR34",progeny:77,cwt:939.47,marb:19.75,ema:91.39,fineness:4.62},
+  {name:"KKWFE0010",progeny:45,cwt:905.47,marb:26.9,ema:86.76,fineness:5.79},
   {name:"RGRFS483J",progeny:34,cwt:949.62,marb:24.12,ema:92.06,fineness:5.46},
   {name:"RGRFS487J",progeny:22,cwt:872.75,marb:21.65,ema:86.73,fineness:5.09},
   {name:"RGRFS481J",progeny:20,cwt:960.0,marb:25.07,ema:100.85,fineness:4.85},
   {name:"RGRFS528",progeny:19,cwt:983.06,marb:23.76,ema:98.54,fineness:4.99},
   {name:"RGRFS525",progeny:16,cwt:975.0,marb:24.19,ema:91.48,fineness:4.9},
   {name:"USAFB36472",progeny:15,cwt:919.1,marb:24.09,ema:87.08,fineness:5.48},
+  {name:"RGRFBR516",progeny:12,cwt:904.92,marb:19.45,ema:91.22,fineness:4.69},
   {name:"RGRFS482J",progeny:12,cwt:931.17,marb:25.47,ema:96.31,fineness:5.34},
   {name:"WSIFS513",progeny:10,cwt:880.05,marb:25.08,ema:86.31,fineness:5.55},
   {name:"RGRFS534",progeny:7,cwt:888.43,marb:25.39,ema:84.06,fineness:5.69},
   {name:"RGRFS511",progeny:7,cwt:982.86,marb:22.67,ema:92.62,fineness:5.49},
   {name:"KT4FK1888",progeny:7,cwt:1010.43,marb:22.98,ema:104.49,fineness:5.17},
-  {name:"RGRFBR516",progeny:6,cwt:940.0,marb:19.5,ema:85.81,fineness:4.63},
-  {name:"RGRFQ436",progeny:5,cwt:853.4,marb:28.53,ema:90.58,fineness:5.84},
+  {name:"RGRFQ436",progeny:6,cwt:831.75,marb:29.63,ema:93.14,fineness:5.94},
+  {name:"RGRFBR490",progeny:5,cwt:964.0,marb:18.06,ema:106.14,fineness:4.2},
   {name:"USAFB15527",progeny:5,cwt:962.1,marb:23.53,ema:93.82,fineness:5.32},
   {name:"RGRFRH005",progeny:2,cwt:896.5,marb:23.16,ema:89.34,fineness:4.73},
-  {name:"RGRFS513",progeny:2,cwt:1035.0,marb:23.0,ema:86.64,fineness:5.77},
-  {name:"RGRFBR490",progeny:1,cwt:863.0,marb:21.9,ema:91.46,fineness:5.01}
+  {name:"RGRFS513",progeny:2,cwt:1035.0,marb:23.0,ema:86.64,fineness:5.77}
 ];
 
 const PROGENY = [
@@ -1315,7 +1440,33 @@ const PROGENY = [
   {date:"Oct 16 2026",id:"RGR124V9982",sire:"RGRFS481J",cwt:938.0,marb:30.16,ema:104.78,fineness:4.58,dof:697,age:25},
   {date:"Oct 16 2026",id:"RGR124V9728",sire:"USAFB36472",cwt:1060.0,marb:27.57,ema:114.87,fineness:4.82,dof:697,age:25},
   {date:"Oct 16 2026",id:"RGR124V0000",sire:"GMYFR34",cwt:809.0,marb:29.32,ema:98.35,fineness:4.75,dof:697,age:25},
-  {date:"Oct 16 2026",id:"RGR124V9822",sire:"GMYFR34",cwt:1084.0,marb:23.66,ema:99.68,fineness:3.77,dof:697,age:25}
+  {date:"Oct 16 2026",id:"RGR124V9822",sire:"GMYFR34",cwt:1084.0,marb:23.66,ema:99.68,fineness:3.77,dof:697,age:25},
+  {date:"Sep 3 2026",id:"RGR124V9850",sire:"RGRFQ434G",cwt:950.0,marb:22.05,ema:116.56,fineness:4.91,dof:654,age:24},
+  {date:"Sep 3 2026",id:"RGR124V9997",sire:"KKWFE0010",cwt:705.0,marb:32.07,ema:78.31,fineness:5.79,dof:654,age:24},
+  {date:"Sep 3 2026",id:"RGR_25W24V1268",sire:"RGRFBR516",cwt:884.5,marb:25.77,ema:81.22,fineness:5.35,dof:510,age:19},
+  {date:"Sep 3 2026",id:"RGR125W1269",sire:"RGRFQ434G",cwt:879.5,marb:23.52,ema:80.85,fineness:6.29,dof:538,age:20},
+  {date:"Sep 3 2026",id:"RGR_25W24V1270",sire:"RGRFBR490",cwt:958.5,marb:15.15,ema:96.59,fineness:3.31,dof:510,age:19},
+  {date:"Sep 3 2026",id:"RGR125W1274",sire:"RGRFQ434G",cwt:989.5,marb:30.27,ema:103.21,fineness:7.11,dof:538,age:20},
+  {date:"Sep 3 2026",id:"RGR_25W24V1275",sire:"RGRFBR516",cwt:818.0,marb:17.89,ema:96.21,fineness:3.87,dof:510,age:19},
+  {date:"Sep 3 2026",id:"RGR_25W24V1276",sire:"RGRFBR490",cwt:987.0,marb:21.13,ema:134.27,fineness:4.66,dof:510,age:19},
+  {date:"Sep 3 2026",id:"RGR125W1278",sire:"RGRFQ434G",cwt:974.0,marb:29.77,ema:93.76,fineness:6.62,dof:538,age:20},
+  {date:"Sep 3 2026",id:"RGR_25W24V1279",sire:"RGRFBR490",cwt:964.5,marb:19.67,ema:101.56,fineness:4.94,dof:510,age:19},
+  {date:"Sep 3 2026",id:"RGR_25W24V1280",sire:"RGRFBR516",cwt:886.0,marb:17.14,ema:95.1,fineness:4.88,dof:510,age:19},
+  {date:"Sep 3 2026",id:"RGR_25W24V1281",sire:"RGRFBR516",cwt:892.5,marb:19.21,ema:115.1,fineness:4.59,dof:510,age:19},
+  {date:"Sep 3 2026",id:"RGR_25W24V1282",sire:"RGRFBR490",cwt:1047.0,marb:12.45,ema:106.82,fineness:3.09,dof:510,age:19},
+  {date:"Sep 3 2026",id:"RGR125W1283",sire:"RGRFQ434G",cwt:951.0,marb:16.38,ema:98.78,fineness:4.75,dof:538,age:20},
+  {date:"Sep 3 2026",id:"RGR125W1285",sire:"RGRFQ434G",cwt:977.0,marb:19.57,ema:111.84,fineness:4.15,dof:538,age:20},
+  {date:"Sep 3 2026",id:"RGR_25W24V1287",sire:"RGRFBR516",cwt:893.0,marb:18.35,ema:95.01,fineness:5.12,dof:510,age:19},
+  {date:"Sep 3 2026",id:"RGR125W1288",sire:"RGRFQ434G",cwt:963.0,marb:26.58,ema:115.01,fineness:6.44,dof:538,age:20},
+  {date:"Sep 3 2026",id:"RGR125W1289",sire:"RGRFQ434G",cwt:896.5,marb:20.0,ema:80.38,fineness:5.2,dof:538,age:20},
+  {date:"Sep 3 2026",id:"RGR_25W24V1290",sire:"RGRFBR516",cwt:845.0,marb:18.03,ema:97.07,fineness:4.67,dof:510,age:19},
+  {date:"Sep 3 2026",id:"RGR_23U29579",sire:"",cwt:1082.0,marb:19.98,ema:109.19,fineness:4.12,dof:1036,age:36},
+  {date:"Sep 3 2026",id:"RGR125W6631",sire:"RGRFQ434G",cwt:863.5,marb:25.98,ema:90.13,fineness:6.19,dof:538,age:20},
+  {date:"Sep 3 2026",id:"RGR124V9426",sire:"RGRFQ436",cwt:723.5,marb:35.13,ema:105.97,fineness:6.4,dof:893,age:31},
+  {date:"Sep 3 2026",id:"RGR124V0106",sire:"KKWFE0010",cwt:932.5,marb:28.31,ema:97.55,fineness:5.13,dof:668,age:24},
+  {date:"Sep 3 2026",id:"RGR124V0075",sire:"GMYFR34",cwt:1090.5,marb:20.25,ema:112.67,fineness:4.45,dof:640,age:23},
+  {date:"Sep 3 2026",id:"RGR124V9906",sire:"KKWFE0010",cwt:897.0,marb:26.33,ema:89.34,fineness:5.17,dof:668,age:24},
+  {date:"Sep 3 2026",id:"RGR124V9913",sire:"KKWFE0010",cwt:887.5,marb:23.24,ema:86.99,fineness:5.3,dof:668,age:24}
 ];
 
 const COLORS = [
@@ -1366,8 +1517,9 @@ function renderGrid() {
     const cc = getColorClass(oi);
     // hero is the active sort, others follow
     const otherKeys = order.filter(k => k !== currentSort);
+    const withImgCount = PROGENY.filter(p => p.sire === s.name && IMG_MAP[p.id]).length;
     return `
-    <div class="sire-card">
+    <div class="sire-card" onclick="openSireGallery('${s.name}')" title="View ${s.progeny} progeny images">
       <div class="corner-tl"></div>
       <div class="card-top">
         <span class="card-progeny">${s.progeny} PROGENY${lowN ? `<span class="low-n-badge">LOW N</span>` : ''}</span>
@@ -1381,6 +1533,7 @@ function renderGrid() {
         ${buildStat(s, currentSort, true)}
         ${otherKeys.map(k => buildStat(s, k, false)).join('')}
       </div>
+      <div class="card-gallery-hint">⊞ VIEW ${withImgCount} IMAGES</div>
     </div>`;
   }).join('');
 }
@@ -1635,7 +1788,7 @@ const IMG_MAP = {"RGR124V29303": "https://storage.googleapis.com/carcassdb/beef/
   "RGR124V9982":"https://storage.googleapis.com/carcassdb/beef/3a077af2-0311-4f1a-b0d8-ba629643d092/cross_section_800x600.jpg",
   "RGR124V9728":"https://storage.googleapis.com/carcassdb/beef/769d34f4-8861-4c93-b26f-884f9f3c34da/cross_section_800x600.jpg",
   "RGR124V0000":"https://storage.googleapis.com/carcassdb/beef/dbbd4541-1b9f-4db8-9ef1-2417c872681d/cross_section_800x600.jpg",
-  "RGR124V9822":"https://storage.googleapis.com/carcassdb/beef/11233ac0-b76d-41e1-8ad6-b378e4cc911e/cross_section_800x600.jpg",};
+  "RGR124V9822":"https://storage.googleapis.com/carcassdb/beef/11233ac0-b76d-41e1-8ad6-b378e4cc911e/cross_section_800x600.jpg","RGR124V9850":"https://storage.googleapis.com/carcassdb/beef/3e5c0d9f-be38-49bd-a2bb-ac624574c7d7/cross_section_800x600.jpg","RGR124V9997":"https://storage.googleapis.com/carcassdb/beef/45d3997d-0cd8-4b5f-9ee9-af7853280ca9/cross_section_800x600.jpg","RGR_25W24V1268":"https://storage.googleapis.com/carcassdb/beef/1f281d73-bee9-4041-ad3a-5cbcbdc55ad5/cross_section_800x600.jpg","RGR125W1269":"https://storage.googleapis.com/carcassdb/beef/2697707f-9bfc-4ebf-b566-a162d5b80e5b/cross_section_800x600.jpg","RGR_25W24V1270":"https://storage.googleapis.com/carcassdb/beef/027e2f1a-bfbc-456a-96bc-b1a62a389a81/cross_section_800x600.jpg","RGR125W1274":"https://storage.googleapis.com/carcassdb/beef/7dd49f74-598a-45b1-bcb4-a06be9d6a06c/cross_section_800x600.jpg","RGR_25W24V1275":"https://storage.googleapis.com/carcassdb/beef/8cf91a3c-a597-4231-a90f-7e809eb92d96/cross_section_800x600.jpg","RGR_25W24V1276":"https://storage.googleapis.com/carcassdb/beef/4a69b83f-83ce-4e2f-9ab2-0d1c55122a53/cross_section_800x600.jpg","RGR125W1278":"https://storage.googleapis.com/carcassdb/beef/de25bd4e-f369-4cfc-bae0-a404bc67b4d2/cross_section_800x600.jpg","RGR_25W24V1279":"https://storage.googleapis.com/carcassdb/beef/81caca56-0df7-475d-86e7-217fec175070/cross_section_800x600.jpg","RGR_25W24V1280":"https://storage.googleapis.com/carcassdb/beef/4fca54f5-12fb-40d7-b36e-cc38fbfb4e6d/cross_section_800x600.jpg","RGR_25W24V1281":"https://storage.googleapis.com/carcassdb/beef/5d503d44-a1f6-439e-a890-943a2698a724/cross_section_800x600.jpg","RGR_25W24V1282":"https://storage.googleapis.com/carcassdb/beef/3ef76ba3-ba42-44de-b7be-1056acee9ddb/cross_section_800x600.jpg","RGR125W1283":"https://storage.googleapis.com/carcassdb/beef/567a30a0-18fe-4f91-b28d-4cff18108cf6/cross_section_800x600.jpg","RGR125W1285":"https://storage.googleapis.com/carcassdb/beef/13ff3d20-4020-47e8-b354-ea42ad6ebd00/cross_section_800x600.jpg","RGR_25W24V1287":"https://storage.googleapis.com/carcassdb/beef/12dcc299-d6ad-43ed-909f-93b32912991a/cross_section_800x600.jpg","RGR125W1288":"https://storage.googleapis.com/carcassdb/beef/e87eeac4-e258-481c-97f8-377cc3c3e0d1/cross_section_800x600.jpg","RGR125W1289":"https://storage.googleapis.com/carcassdb/beef/6d328aa6-4cea-479f-a905-4c8db9c70939/cross_section_800x600.jpg","RGR_25W24V1290":"https://storage.googleapis.com/carcassdb/beef/2f3ce445-17c4-404f-b54f-0b724d86d29f/cross_section_800x600.jpg","RGR_23U29579":"https://storage.googleapis.com/carcassdb/beef/0c2daee3-9350-4b4b-ba54-e63e03e86a87/cross_section_800x600.jpg","RGR125W6631":"https://storage.googleapis.com/carcassdb/beef/186765f6-3320-4aa5-8700-3f7f600b4e58/cross_section_800x600.jpg","RGR124V9426":"https://storage.googleapis.com/carcassdb/beef/b7f09f30-7790-44bc-a144-f09c4054f247/cross_section_800x600.jpg","RGR124V0106":"https://storage.googleapis.com/carcassdb/beef/cca9b9a4-d48f-4335-965b-d60c8633db14/cross_section_800x600.jpg","RGR124V0075":"https://storage.googleapis.com/carcassdb/beef/6a81e247-5570-4d9b-95b8-81cadd95d579/cross_section_800x600.jpg","RGR124V9906":"https://storage.googleapis.com/carcassdb/beef/a773210b-62d5-454c-9e65-8f62471f8f18/cross_section_800x600.jpg","RGR124V9913":"https://storage.googleapis.com/carcassdb/beef/420907d1-d595-4bff-85af-a4b83b5030fd/cross_section_800x600.jpg",};
 const DOB_MAP = {"RGR123U80864": "01/10/2023", "RGR124V29550": "30/01/2024", "RGR124V29525": "30/01/2024", "RGR123U80838": "01/10/2023", "RGR123U80797": "06/11/2023", "RGR124V29456": "30/01/2024", "RGR123U80861": "01/10/2023", "RGR124V29547": "30/01/2024", "RGR124V29392": "01/01/2024", "RGR124V0117": "24/01/2024", "RGR124V29389": "01/01/2024", "RGR124V29569": "01/01/2024", "RGR123U9863": "15/03/2023", "RGR123U80847": "01/10/2023", "RGR124V29439": "01/01/2024", "RGR123U80863": "01/10/2023", "RGR123U80781": "01/11/2023", "RGR124V29417": "01/01/2024", "RGR123U80931": "06/11/2023", "RGR124V29566": "30/01/2024", "RGR123U80801": "06/11/2023", "RGR124V29423": "30/01/2024", "RGR123U80871": "01/11/2023", "RGR124V29480": "01/01/2024", "RGR123U80839": "01/10/2023", "RGR124V29464": "30/01/2024", "RGR124V33800": "15/03/2024", "RGR123U80873": "01/11/2023", "RGR123U80850": "01/10/2023", "RGR124V29375": "01/01/2024", "RGR124V29377": "30/01/2024", "RGR124V29441": "01/01/2024", "RGR123U80904": "01/11/2023", "RGR123U87947": "01/11/2023", "RGR123U80806": "01/10/2023", "RGR124V29575": "30/01/2024", "RGR123U80829": "01/10/2023", "RGR123U80834": "01/10/2023", "RGR124V29476": "01/01/2024", "RGR123U80773": "06/11/2023", "RGR124V3809": "15/03/2024", "RGR124V29438": "01/01/2024", "RGR124V0123": "24/01/2024", "RGR124V29381": "01/01/2024", "RGR123U80814": "01/10/2023", "RGR123U80790": "06/11/2023", "RGR123U80865": "01/10/2023", "RGR123U80905": "06/11/2023", "RGR123U80909": "06/11/2023", "RGR124V29370": "01/01/2024", "RGR124V29413": "01/01/2024", "RGR124V3780": "15/03/2024", "RGR124V29459": "01/01/2024", "RGR124V29460": "01/01/2024", "RGR123U80918": "06/11/2023", "RGR124V29462": "01/01/2024", "RGR124V29558": "30/01/2024", "RGR124V29371": "01/01/2024", "RGR123U80870": "06/11/2023", "RGR124V29372": "01/01/2024", "RGR123U80785": "06/11/2023", "RGR124V29436": "30/01/2024", "RGR124V29386": "01/01/2024", "RGR123U9792": "15/03/2023", "RGR124V29565": "30/01/2024", "RGR124V29437": "30/01/2024", "RGR123U80843": "01/10/2023", "RGR123U80919": "01/11/2023", "RGR123U9779": "15/03/2023", "RGR123U80872": "06/11/2023", "RGR124V29382": "01/01/2024", "RGR124V29410": "01/01/2024", "RGR124V29388": "30/01/2024", "RGR123U9785": "15/03/2023", "RGR123U9986": "23/12/2023", "RGR124V29440": "30/01/2024", "RGR123U80831": "01/10/2023", "RGR123U80917": "01/11/2023", "RGR124V29412": "01/01/2024", "RGR123U80929": "06/11/2023", "RGR124V9948": "25/01/2024", "RGR123U80867": "01/10/2023", "RGR123U80791": "06/11/2023", "RGR123U80925": "06/11/2023", "RGR124V0121": "25/01/2024", "RGR124V29555": "30/01/2024", "RGR123U80844": "01/10/2023", "RGR124V29418": "30/01/2024", "RGR124V29378": "01/01/2024", "RGR124V29515": "01/01/2024", "RGR123U80836": "01/10/2023", "RGR124V29387": "01/01/2024", "RGR124V29379": "01/01/2024", "RGR124V9128": "25/01/2024", "RGR124V29514": "01/01/2024", "RGR123U80922": "06/11/2023", "RGR123U80924": "01/11/2023", "RGR123U80786": "01/11/2023", "RGR123U80808": "01/10/2023", "RGR123U80827": "01/10/2023", "RGR124V29383": "30/01/2024", "RGR123U80912": "06/11/2023", "RGR124V29406": "30/01/2024", "RGR123U80824": "01/10/2023", "RGR123U80809": "01/10/2023", "RGR124V29477": "01/01/2024", "RGR124V29560": "30/01/2024", "RGR123U80851": "01/10/2023", "RGR124V29513": "01/01/2024", "RGR123U80782": "06/11/2023", "RGR124V29368": "01/01/2024", "RGR124V29420": "30/01/2024", "RGR123U80907": "06/11/2023", "RGR124V29465": "01/01/2024", "RGR124V29552": "30/01/2024", "RGR123U80914": "06/11/2023", "RGR124V29559": "30/01/2024", "RGR124V29395": "01/01/2024", "RGR123U80841": "01/10/2023", "RGR124V29479": "01/01/2024", "RGR123U80794": "01/11/2023", "RGR123U9857": "15/03/2023", "RGR123U0007": "15/03/2023", "RGR124V30034": "01/01/2024", "RGR123U80812": "01/10/2023", "RGR124V29380": "01/01/2024", "RGR124V9131": "25/01/2024", "RGR124V29416": "30/01/2024", "RGR124V29442": "30/01/2024", "RGR123U80906": "01/11/2023", "RGR123U80875": "01/11/2023", "RGR123U80832": "01/10/2023", "RGR123U80862": "01/10/2023", "RGR123U0015": "15/03/2023", "RGR123U80921": "01/11/2023", "RGR124V3807": "15/03/2024", "RGR123U80916": "01/11/2023", "RGR124V29573": "01/01/2024", "RGR124V29407": "01/01/2024", "RGR124V29409": "01/01/2024", "RGR124V9964": "25/01/2024", "RGR124V29374": "01/01/2024", "RGR124V29376": "30/01/2024", "RGR123U80828": "01/10/2023", "RGR124V29415": "01/01/2024", "RGR123U9781": "15/03/2023", "RGR123U80826": "01/10/2023", "RGR124V29521": "30/01/2024", "RGR124V30027": "30/01/2024", "RGR124V29443": "01/01/2024", "RGR123U80903": "06/11/2023", "RGR123U80774": "06/11/2023", "RGR124V29458": "01/01/2024", "RGR123U9783": "15/03/2023", "RGR124V9763": "05/02/2024", "RGR124V29510": "01/01/2024", "RGR123U80792": "01/11/2023", "RGR123U80779": "06/11/2023", "RGR124V29384": "30/01/2024", "RGR123U80869": "06/11/2023", "RGR123U80823": "01/10/2023", "RGR123U80920": "01/11/2023", "RGR123U80859": "01/10/2023", "RGR123U80840": "01/10/2023", "RGR124V3794": "15/03/2024", "RGR124V29570": "30/01/2024", "RGR123U80811": "01/10/2023", "RGR124V29563": "30/01/2024", "RGR124V29482": "01/01/2024", "RGR123U9939": "15/03/2023", "RGR123U80798": "06/11/2023", "RGR124V29551": "30/01/2024", "RGR124V29393": "01/01/2024", "RGR123U9869": "15/03/2023", "RGR123U80817": "01/10/2023", "RGR124V29484": "01/01/2024", "RGR124V3795": "15/03/2024", "RGR123U80805": "01/10/2023", "RGR123U9790": "15/03/2023", "RGR124V0122": "24/01/2024", "RGR123U80776": "06/11/2023", "RGR123U80879": "06/11/2023", "RGR123U9867": "15/03/2023", "RGR123U80787": "06/11/2023", "RGR123U0009": "15/03/2023", "RGR124V29461": "01/01/2024", "RGR123U80876": "06/11/2023", "RGR123U80803": "01/11/2023", "RGR123U80923": "01/11/2023", "RGR223U9988": "23/12/2023", "RGR123U9777": "15/03/2023", "RGR123U80908": "06/11/2023", "RGR123U9875": "15/03/2023", "RGR124V29509": "01/01/2024", "RGR124V29485": "01/01/2024", "RGR124V29457": "01/01/2024", "RGR123U80796": "01/11/2023", "RGR123U9987": "23/12/2023", "RGR123U80928": "06/11/2023", "RGR124V9761": "25/01/2024", "RGR123U80820": "01/10/2023", "RGR123U80848": "01/10/2023", "RGR124V29390": "01/01/2024", "RGR123U80910": "06/11/2023", "RGR123U80795": "06/11/2023", "RGR124V9957": "24/01/2024", "RGR124V9950": "25/01/2024", "RGR123U80913": "01/11/2023", "RGR124V9132": "25/01/2024", "RGR123U80789": "01/11/2023", "RGR124V29483": "30/01/2024", "RGR123U9784": "15/03/2023", "RGR124V29414": "01/01/2024", "RGR124V30032": "01/01/2024", "RGR124V29444": "01/01/2024", "RGR123U9782": "15/03/2023", "RGR123U80822": "01/10/2023", "RGR124V29481": "01/01/2024", "RGR124V29408": "01/01/2024", "RGR124V29511": "01/01/2024", "RGR123U9990": "23/12/2023", "RGR124V29394": "01/01/2024", "RGR123U9868": "15/03/2023", "RGR123U9861": "15/03/2023", "RGR124V30033": "01/01/2024", "RGR123U80837": "01/10/2023", "RGR124V9758": "25/01/2024", "RGR124V29512": "01/01/2024", "RGR124V9133": "25/01/2024", "RGR123U80799": "01/11/2023", "RGR123U80858": "01/10/2023", "RGR124V0120": "24/01/2024", "RGR123U9931": "15/03/2023", "RGR123U80926": "06/11/2023", "RGR123U9940": "15/03/2023", "RGR123U80927": "06/11/2023", "RGR123U80784": "06/11/2023", "RGR124V29411": "30/01/2024", "RGR123U0008": "15/03/2023", "RGR124V9130": "25/01/2024", "RGR123U9926": "15/03/2023", "RGRF23U791": "23/04/2023", "RGR123U80845": "01/10/2023", "RGR123U80856": "01/10/2023", "RGR123U80818": "01/10/2023", "RGR123U80833": "01/10/2023", "RGR123U80815": "01/10/2023", "RGR123U80855": "01/10/2023", "RGR123U80860": "01/10/2023", "RGR123U80830": "01/10/2023", "RGR123U80835": "01/10/2023", "RGR123U80842": "01/10/2023", "RGR123U80825": "01/10/2023", "RGR123U80854": "01/10/2023", "RGR123U80816": "01/10/2023", "RGR123U87946": "01/10/2023", "RGR123U80821": "01/10/2023", "RGR123U80807": "01/10/2023", "RGR123U80934": "01/10/2023", "RGR123U80853": "01/10/2023", "RGR123U80813": "01/10/2023", "RGR123U747": "05/05/2023"};
 const AGE_MAP = {"RGR123U80864": 21.3, "RGR124V29550": 19.1, "RGR124V29525": 19.1, "RGR123U80838": 21.3, "RGR123U80797": 21.8, "RGR124V29456": 19.1, "RGR123U80861": 21.3, "RGR124V29547": 19.1, "RGR124V29392": 21.8, "RGR124V0117": 19.3, "RGR124V29389": 22.1, "RGR124V29569": 21.8, "RGR123U80847": 22.9, "RGR124V29439": 22.1, "RGR123U80863": 22.9, "RGR123U80781": 22.0, "RGR124V29417": 22.1, "RGR123U80931": 20.1, "RGR124V29566": 19.1, "RGR123U80801": 21.7, "RGR124V29423": 19.1, "RGR123U80871": 21.8, "RGR124V29480": 22.1, "RGR123U80839": 23.0, "RGR124V29464": 19.1, "RGR124V33800": 17.6, "RGR123U80873": 21.8, "RGR123U80850": 22.9, "RGR124V29375": 22.1, "RGR124V29377": 19.1, "RGR124V29441": 22.1, "RGR123U80904": 22.0, "RGR123U87947": 21.8, "RGR123U80806": 21.3, "RGR124V29575": 19.1, "RGR123U80829": 21.3, "RGR123U80834": 22.9, "RGR124V29476": 21.8, "RGR123U80856": 21.3, "RGR123U80818": 21.3, "RGR123U80773": 21.7, "RGR124V3809": 17.6, "RGR124V29438": 22.1, "RGR123U80853": 21.3, "RGR124V0123": 19.3, "RGR124V29381": 22.1, "RGR123U80814": 22.9, "RGR123U80790": 21.7, "RGR123U80865": 23.0, "RGR123U80816": 21.3, "RGR123U80905": 21.7, "RGR123U80909": 21.7, "RGR124V29370": 20.0, "RGR124V29413": 21.8, "RGR124V3780": 17.6, "RGR124V29459": 21.8, "RGR124V29460": 22.1, "RGR123U80918": 21.7, "RGR124V29462": 22.1, "RGR124V29558": 19.1, "RGR124V29371": 21.8, "RGR123U80870": 21.7, "RGR124V29372": 21.8, "RGR123U80785": 21.8, "RGR124V29436": 19.1, "RGR123U80833": 21.3, "RGR124V29386": 20.0, "RGR123U9792": 26.4, "RGR124V29565": 19.1, "RGR124V29437": 19.1, "RGR123U80843": 22.9, "RGR123U80919": 22.0, "RGR123U9779": 26.4, "RGR123U80872": 21.8, "RGR124V29382": 21.8, "RGR124V29410": 20.0, "RGR124V29388": 19.1, "RGR123U9785": 26.4, "RGR123U9986": 20.3, "RGR124V29440": 19.1, "RGR123U80831": 22.9, "RGR123U80917": 22.0, "RGR124V29412": 22.1, "RGR123U80815": 21.3, "RGR123U80929": 21.8, "RGR124V9948": 21.1, "RGR123U80867": 22.9, "RGR123U80791": 21.8, "RGR123U80925": 21.8, "RGR123U80855": 21.3, "RGR124V0121": 19.2, "RGR124V29555": 19.1, "RGR123U80844": 22.9, "RGR124V29418": 19.1, "RGR123U80860": 21.3, "RGR124V29378": 21.8, "RGR124V29515": 22.1, "RGR123U80813": 21.3, "RGR123U80836": 21.3, "RGR124V29387": 21.8, "RGR124V29379": 22.1, "RGR124V9128": 21.3, "RGR124V29514": 21.8, "RGR123U80922": 21.8, "RGR123U80924": 21.8, "RGR123U80786": 22.0, "RGR123U80808": 22.9, "RGR123U80827": 22.9, "RGR124V29383": 21.1, "RGR123U80912": 21.8, "RGR124V29406": 19.1, "RGR123U80824": 22.9, "RGR123U80809": 22.9, "RGR124V29477": 22.1, "RGR124V29560": 19.1, "RGR123U80851": 22.9, "RGR123U87946": 21.2, "RGR124V29513": 21.8, "RGR123U80782": 21.7, "RGR124V29368": 21.8, "RGR124V29420": 19.1, "RGR123U80907": 21.8, "RGR124V29465": 22.1, "RGR124V29552": 19.1, "RGR123U80914": 21.7, "RGR124V29559": 19.1, "RGR124V29395": 20.0, "RGR123U80841": 22.9, "RGR124V29479": 21.8, "RGR123U80794": 22.0, "RGR123U9857": 26.4, "RGR123U0007": 27.8, "RGR124V30034": 21.8, "RGR123U80812": 22.9, "RGR123U80830": 21.3, "RGR124V29380": 21.8, "RGR124V29416": 19.1, "RGR124V29442": 19.1, "RGR123U80906": 21.8, "RGR123U80875": 21.8, "RGR123U80821": 21.3, "RGR123U80832": 22.9, "RGR123U80862": 22.9, "RGR123U0015": 27.8, "RGR123U80921": 22.0, "RGR124V3807": 17.6, "RGR123U80916": 22.0, "RGR123U80807": 21.3, "RGR124V29573": 22.1, "RGR124V29407": 20.0, "RGR123U80835": 21.3, "RGR124V29409": 22.1, "RGR124V9964": 21.3, "RGR124V29374": 21.8, "RGR123U80842": 21.3, "RGR124V29376": 19.1, "RGR123U80828": 22.9, "RGR124V29415": 21.8, "RGR123U9781": 26.4, "RGR123U80826": 22.9, "RGR124V29521": 19.1, "RGR124V30027": 19.1, "RGR124V29443": 22.1, "RGR123U80903": 21.7, "RGR123U80774": 21.7, "RGR124V29458": 22.1, "RGR123U9783": 27.8, "RGR124V9763": 18.9, "RGR124V29510": 21.8, "RGR123U80792": 22.0, "RGR123U80779": 21.7, "RGR124V29384": 19.1, "RGR123U80869": 21.8, "RGR123U80823": 22.9, "RGR123U80920": 21.8, "RGR123U80859": 22.9, "RGR123U80840": 22.9, "RGR123U80845": 21.3, "RGR124V29570": 19.1, "RGR123U80811": 22.9, "RGR124V29563": 19.1, "RGR124V29482": 22.1, "RGR123U9939": 26.4, "RGR123U80798": 21.7, "RGR124V29551": 19.1, "RGR124V29393": 21.8, "RGR123U9869": 27.8, "RGR123U80817": 22.9, "RGR124V29484": 21.8, "RGR124V3795": 17.6, "RGR123U80805": 22.9, "RGR123U9790": 27.8, "RGR124V0122": 21.3, "RGR123U80776": 21.8, "RGR123U80879": 21.8, "RGR123U80825": 21.3, "RGR123U9867": 26.4, "RGR123U80787": 21.8, "RGR123U0009": 26.4, "RGR124V29461": 21.8, "RGR123U80876": 21.7, "RGR123U80803": 21.8, "RGR123U80923": 22.0, "RGR123U9777": 27.8, "RGR123U80908": 21.7, "RGR123U9875": 26.4, "RGR124V29509": 22.1, "RGR124V29485": 21.8, "RGR124V29457": 21.8, "RGR123U80796": 22.0, "RGR123U9987": 20.3, "RGR123U80928": 21.7, "RGR123U80820": 22.9, "RGR123U80848": 22.9, "RGR124V29390": 21.8, "RGR123U80910": 21.7, "RGR123U80854": 21.3, "RGR123U80795": 21.7, "RGR124V9950": 19.2, "RGR123U80913": 22.0, "RGR124V9132": 21.3, "RGR123U80789": 21.8, "RGR124V29483": 19.1, "RGR123U9784": 27.8, "RGR124V29414": 21.8, "RGR124V30032": 21.8, "RGR124V29444": 21.8, "RGR123U80822": 22.9, "RGR124V29481": 21.8, "RGR124V29408": 22.1, "RGR124V29511": 22.1, "RGR123U9990": 20.3, "RGR124V29394": 20.0, "RGR123U9868": 26.4, "RGR123U9861": 27.8, "RGR124V30033": 22.1, "RGR123U80837": 22.9, "RGR124V9758": 19.2, "RGR124V29512": 22.1, "RGR124V9133": 19.2, "RGR123U80799": 22.0, "RGR123U80858": 22.9, "RGR124V0120": 19.3, "RGR123U9931": 26.4, "RGR123U80926": 21.7, "RGR123U9940": 27.8, "RGR123U80927": 21.8, "RGR123U80784": 21.8, "RGR124V29411": 19.1, "RGR123U0008": 26.4, "RGR123U9926": 27.8, "RGR123U747": 24.8, "RGR123U80934": 21.3};
 const DOF_MAP = {"RGR123U80864": 384, "RGR124V29550": 491, "RGR124V29525": 491, "RGR123U80838": 384, "RGR123U80797": 442, "RGR124V29456": 491, "RGR123U80861": 384, "RGR124V29547": 477, "RGR124V29392": 437, "RGR124V0117": 477, "RGR124V29389": 446, "RGR124V29569": 437, "RGR_U9863": 417, "RGR_24V80793": 440, "RGR123U80847": 440, "RGR124V29439": 446, "RGR123U80863": 440, "RGR123U80781": 442, "RGR124V29417": 446, "RGR123U80931": 384, "RGR124V29566": 491, "RGR123U80801": 440, "RGR124V29423": 491, "RGR123U80871": 440, "RGR124V29480": 446, "RGR123U80839": 442, "RGR124V29464": 491, "RGR124V33800": 440, nan: 375, "RGR123U80873": 440, "RGR123U80850": 440, "RGR124V29375": 446, "RGR124V29377": 491, "RGR124V29441": 446, "RGR123U80904": 442, "RGR123U87947": 440, "RGR123U80806": 384, "RGR124V29575": 491, "RGR123U80829": 384, "RGR123U80834": 440, "RGR23U9190": 417, "RGR124V29476": 437, "RGR123U80856": 384, "RGR123U80818": 384, "RGR123U80773": 440, "RGR124V3809": 440, "RGR124V29438": 446, "RGR123U80853": 384, "RGR124V0123": 533, "RGR124V29381": 446, "RGR123U80814": 440, "RGR123U80790": 440, "RGR123U80865": 442, "RGR123U80816": 384, "RGR123U80905": 440, "RGR123U80909": 440, "RGR124V29370": 533, "RGR124V29413": 437, "RGR124V3780": 477, "RGR124V29459": 437, "RGR124V29460": 446, "RGR123U80918": 440, "RGR124V29462": 446, "RGR124V29558": 477, "RGR124V29371": 437, "RGR123U80870": 440, "RGR124V29372": 437, "RGR123U80785": 442, "RGR124V29436": 477, "RGR123U80833": 384, "RGR124V29386": 533, "RGR123U9792": 375, "RGR_U9874": 375, "RGR124V29565": 477, "RGR124V29437": 491, "RGR123U80843": 440, "RGR123U80919": 442, "RGR_U9864": 375, "RGR123U9779": 375, "RGR123U80872": 442, "RGR124V29382": 437, "RGR124V29410": 533, "RGR124V29388": 477, "RGR123U9785": 375, "RGR123U9986": 477, "RGR124V29440": 477, "RGR_U0012": 417, "RGR123U80831": 440, "RGR123U80917": 442, "RGR124V29412": 446, "RGR123U80815": 384, "RGR124V80932": 384, "RGR123U80929": 442, "RGR124V9948": 437, "RGR123U80867": 440, "RGR123U80791": 442, "RGR123U80925": 442, "RGR123U80855": 384, "RGR124V0121": 477, "RGR124V29555": 477, "RGR123U80844": 440, "RGR124V29418": 477, "RGR123U80860": 384, "RGR_U0010": 417, "RGR124V29378": 437, "RGR124V29515": 446, "RGR123U80813": 384, "RGR123U80836": 384, "RGR124V29387": 437, "RGR124V29379": 446, "RGR124V9128": 446, "RGR124V29514": 437, "RGR123U80922": 442, "RGR_U9937": 375, "RGR_23U0014": 417, "RGR123U80924": 440, "RGR123U80786": 442, "RGR123U80808": 440, "RGR_U0778": 375, "RGR23U9186": 417, "RGR123U80827": 440, "RGR_U9860": 375, "RGR124V29383": 446, "RGR123U80912": 442, "RGR124V29406": 491, "RGR123U80824": 440, "RGR123U80809": 440, "RGR124V29477": 446, "RGR124V29560": 491, "RGR123U80851": 440, "RGR123U87946": 417, "RGR124V29513": 437, "RGR123U80782": 440, "RGR124V29368": 437, "RGR124V29420": 477, "RGR_24V80783": 440, "RGR123U80907": 442, "RGR124V29465": 446, "RGR_U0013": 417, "RGR124V29552": 477, "RGR123U80914": 440, "RGR124V29559": 477, "RGR124V29395": 533, "RGR123U80841": 440, "RGR124V29479": 437, "RGR123U80794": 442, "RGR123U9857": 375, "RGR123U0007": 417, "RGR124V30034": 437, "RGR123U80812": 440, "RGR123U80830": 384, "RGR124V29380": 437, "RGR124V9131": 477, "RGR124V29416": 477, "RGR124V29442": 477, "RGR123U80906": 440, "RGR123U80875": 440, "RGR123U80821": 384, "RGR123U80832": 440, "RGR_U9945": 375, "RGR123U80862": 440, "RGR123U0015": 417, "RGR123U80921": 442, "RGR124V3807": 440, "RGR123U80916": 442, "RGR123U80807": 384, "RGR124V29573": 446, "RGR124V29407": 533, "RGR123U80835": 384, "RGR124V29409": 446, "RGR124V9964": 446, "RGR124V29374": 437, "RGR_U9944": 375, "RGR123U80842": 384, "RGR_23U9865": 417, "RGR124V29376": 491, "RGR123U80828": 440, "RGR124V29415": 437, "RGR123U9781": 375, "RGR123U80826": 440, "RGR124V29521": 491, "RGR124V30027": 491, "RGR124V29443": 446, "RGR123U80903": 440, "RGR123U80774": 440, "RGR124V29458": 446, "RGR123U9783": 417, "RGR124V9763": 477, "RGR124V29510": 437, "RGR123U80792": 442, "RGR123U80779": 440, "RGR124V29384": 491, "RGR123U80869": 442, "RGR123U80823": 440, "RGR_U9872": 417, "RGR123U80920": 440, "RGR123U80859": 440, "RGR123U80840": 440, "RGR_U9933": 375, "RGR123U80845": 384, "RGR124V3794": 477, "RGR124V29570": 477, "RGR123U80811": 440, "RGR124V29563": 477, "RGR124V29482": 446, "RGR123U9939": 375, "RGR123U80798": 440, "RGR_U9858": 375, "RGR124V29551": 477, "RGR124V29393": 437, "RGR123U9869": 417, "RGR123U80817": 440, "RGR124V29484": 437, "RGR124V3795": 477, "RGR123U80805": 440, "RGR123U9790": 417, "RGR124V0122": 446, "RGR123U80776": 442, "RGR123U80879": 442, "RGR123U80825": 384, "RGR123U9867": 375, "RGR_U9794": 375, "RGR123U80787": 442, "RGR_U9870": 417, "RGR123U0009": 375, "RGR124V29461": 437, "RGR123U80876": 440, "RGR123U80803": 440, "RGR123U80923": 442, "RGR223U9988": 533, "RGR_U9787": 375, "RGR123U9777": 417, "RGR123U80908": 440, "RGR123U9875": 375, "RGR124V29509": 446, "RGR124V29485": 437, "RGR124V29457": 437, "RGR123U80796": 442, "RGR123U9987": 477, "RGR_U9791m": 417, "RGR123U80928": 440, "RGR124V9761": 533, "RGR123U80820": 440, "RGR123U80848": 440, "RGR124V29390": 437, "RGR123U80910": 440, "RGR_U9793": 417, "RGR123U80854": 384, "RGR123U80795": 440, "RGR124V9957": 477, "RGR124V9950": 477, "RGR_U9929": 417, "RGR123U80913": 442, "RGR124V9132": 446, "RGR123U80789": 440, "RGR124V29483": 491, "RGR123U9784": 417, "RGR_U9934": 375, "RGR124V29414": 437, "RGR124V30032": 437, "RGR124V29444": 437, "RGR_U9782": 375, "RGR123U80822": 440, "RGR124V29481": 437, "RGR124V29408": 446, "RGR124V29511": 446, "RGR123U9990": 533, "RGR124V29394": 533, "RGR_U9928": 375, "RGR123U9868": 375, "RGR123U9861": 417, "RGR124V30033": 446, "RGR123U80837": 440, "RGR124V9758": 477, "RGR124V29512": 446, "RGR124V9133": 477, "RGR_U9856": 375, "RGR123U80799": 442, "RGR123U80858": 440, "RGR124V0120": 533, "RGR123U9931": 375, "RGR123U80926": 440, "RGR_U9788": 417, "RGR_U0011": 417, "RGR123U9940": 417, "RGR123U80927": 442, "RGR_U9935": 375, "RGR123U80784": 442, "RGR124V29411": 491, "RGR123U0008": 375, "RGR_U9862": 375, "RGR_U0006": 417, "RGR124V9130": 477, "RGR_U9866": 417, "RGR123U9926": 417, "RGR123U747": 375, "RGRF23U791": 440, "RGR123U80934": 384};
@@ -1855,6 +2008,74 @@ function renderScatterPlot() {
     });
   }
 }
+
+// ── SIRE GALLERY ─────────────────────────────────────────────────────────────
+function openSireGallery(sireName) {
+  const sire = SIRES.find(s => s.name === sireName);
+  if (!sire) return;
+
+  // header
+  const displayName = (SIRE_INFO[sireName] && SIRE_INFO[sireName].name) || sireName;
+  document.getElementById('sg-sire-name').textContent = displayName;
+  document.getElementById('sg-sire-stats').innerHTML =
+    `Marb: <span>${sire.marb.toFixed(1)}%</span>` +
+    ` &nbsp; CWT: <span>${sire.cwt.toFixed(0)}</span>` +
+    ` &nbsp; EMA: <span>${sire.ema.toFixed(1)} cm²</span>` +
+    ` &nbsp; Fineness: <span>${sire.fineness.toFixed(2)}</span>`;
+
+  // gather progeny for this sire
+  const progs = PROGENY.filter(p => p.sire === sireName);
+  const withImg = progs.filter(p => IMG_MAP[p.id]);
+  const withoutImg = progs.filter(p => !IMG_MAP[p.id]);
+  const ordered = [...withImg, ...withoutImg];
+
+  document.getElementById('sg-count').textContent =
+    `${progs.length} PROGENY RECORDS · ${withImg.length} WITH CROSS-SECTION IMAGE`;
+
+  // build grid
+  const grid = document.getElementById('sg-grid');
+  grid.innerHTML = ordered.map(p => {
+    const imgUrl = IMG_MAP[p.id];
+    const imgHtml = imgUrl
+      ? `<img src="${imgUrl}" alt="${p.id}" loading="lazy" onclick="event.stopPropagation();openImgFromGallery('${p.id}')" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+         <div class="sg-no-img" style="display:none">NO IMAGE</div>`
+      : `<div class="sg-no-img">NO IMAGE</div>`;
+    return `
+    <div class="sg-thumb">
+      ${imgHtml}
+
+      <div class="sg-thumb-info">
+        <div class="sg-thumb-id">${p.id}</div>
+        <div class="sg-thumb-stats">
+          Marb: <b>${p.marb.toFixed(1)}%</b>
+          &nbsp; CWT: <b>${p.cwt.toFixed(0)}</b>
+          &nbsp; EMA: <b>${p.ema.toFixed(1)}</b>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('sgModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeSireGallery() {
+  document.getElementById('sgModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function openImgFromGallery(animalId) {
+  const p = PROGENY.find(x => x.id === animalId);
+  if (p) openModal(p);
+}
+
+// close gallery on Escape
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeSireGallery();
+    document.getElementById('imgModal').classList.remove('open');
+  }
+});
 
 </script>
 </body>
